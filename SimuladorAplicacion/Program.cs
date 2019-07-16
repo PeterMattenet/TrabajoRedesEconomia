@@ -16,18 +16,8 @@ namespace SimuladorAplicacion
         {
             //create a form 
             SimulatorForm form = new SimulatorForm();
-            //create a viewer object 
             
-            //show the form 
             form.ShowDialog();
-
-            //form.SuspendLayout();
-
-            //viewer.Graph.FindNode("C").Attr.Color = Microsoft.Msagl.Drawing.Color.Black;
-            //form.Controls.Add(viewer);
-            //form.ResumeLayout();
-
-            //form.ShowDialog();
 
         }
     }
