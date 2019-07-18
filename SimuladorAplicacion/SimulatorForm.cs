@@ -37,7 +37,7 @@ namespace SimuladorAplicacion
             simControl.ReturnClick += ReturnSetup;
         }
 
-        private void SetupFinish(SetupControl control, SetupInfoArgs arguments)
+        private void SetupFinish(SetupControl control, SimulatorParameters arguments)
         {
             simControl.Setup(arguments);
             this.Controls.Clear();
@@ -89,8 +89,8 @@ namespace SimuladorAplicacion
 
             //_formViewer.ToolBarIsVisible = false;
             //_formViewer.LayoutEditingEnabled = false;
-            ////_formViewer.LayoutEditingEnabled = true;
-            ////_formViewer.FitGraphBoundingBox();
+            //////_formViewer.LayoutEditingEnabled = true;
+            //////_formViewer.FitGraphBoundingBox();
 
             //TextBoxAnalysis = ((RichTextBox)this.Controls.Find("AnalysisBox", true).First()).Lines;
 
@@ -102,7 +102,7 @@ namespace SimuladorAplicacion
             //_formViewer.MouseClick += GraphPanel_MouseClick;
             //_formViewer.Dock = System.Windows.Forms.DockStyle.Fill;
 
-            ////busco panel y agrego el viewer
+            //////busco panel y agrego el viewer
             //var panel = this.Controls.Find("GraphPanel", true).First();
             //panel.Dock = DockStyle.Fill;
             //panel.Controls.Add(_formViewer);
@@ -116,7 +116,7 @@ namespace SimuladorAplicacion
             //InfectionChart.Legends.Add(new Legend("Infected Per Day"));
 
 
-            this.ResumeLayout();
+            //this.ResumeLayout();
 
 
         }

@@ -34,6 +34,7 @@
             this.button2 = new System.Windows.Forms.Button();
             this.Graficar = new System.Windows.Forms.Button();
             this.GraphPanel = new System.Windows.Forms.Panel();
+            this.NetworkSelectBox = new System.Windows.Forms.ComboBox();
             this.AnalysisBox = new System.Windows.Forms.RichTextBox();
             this.Iterate = new System.Windows.Forms.Button();
             this.GraphResultsPanel = new System.Windows.Forms.Panel();
@@ -42,6 +43,7 @@
             StopIterate = new System.Windows.Forms.Button();
             ResetSimulation = new System.Windows.Forms.Button();
             this.tableLayoutPanel1.SuspendLayout();
+            this.GraphPanel.SuspendLayout();
             this.SuspendLayout();
             // 
             // StopIterate
@@ -56,6 +58,7 @@
             StopIterate.TabIndex = 3;
             StopIterate.Text = "Detener";
             StopIterate.UseVisualStyleBackColor = true;
+            StopIterate.Click += new System.EventHandler(this.StopIterate_Click);
             // 
             // ResetSimulation
             // 
@@ -69,6 +72,7 @@
             ResetSimulation.TabIndex = 4;
             ResetSimulation.Text = "Reiniciar";
             ResetSimulation.UseVisualStyleBackColor = true;
+            ResetSimulation.Click += new System.EventHandler(this.ResetSimulation_Click);
             // 
             // tableLayoutPanel1
             // 
@@ -136,11 +140,22 @@
             // 
             // GraphPanel
             // 
+            this.GraphPanel.Controls.Add(this.NetworkSelectBox);
             this.GraphPanel.Location = new System.Drawing.Point(3, 3);
             this.GraphPanel.Name = "GraphPanel";
             this.tableLayoutPanel1.SetRowSpan(this.GraphPanel, 10);
             this.GraphPanel.Size = new System.Drawing.Size(494, 444);
             this.GraphPanel.TabIndex = 1;
+            // 
+            // NetworkSelectBox
+            // 
+            this.NetworkSelectBox.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.NetworkSelectBox.FormattingEnabled = true;
+            this.NetworkSelectBox.Location = new System.Drawing.Point(373, 0);
+            this.NetworkSelectBox.Name = "NetworkSelectBox";
+            this.NetworkSelectBox.Size = new System.Drawing.Size(121, 21);
+            this.NetworkSelectBox.TabIndex = 0;
+            this.NetworkSelectBox.SelectedIndexChanged += new System.EventHandler(this.NetworkSelectBox_SelectedIndexChanged);
             // 
             // AnalysisBox
             // 
@@ -172,6 +187,7 @@
             this.Iterate.TabIndex = 2;
             this.Iterate.Text = "Simular";
             this.Iterate.UseVisualStyleBackColor = true;
+            this.Iterate.Click += new System.EventHandler(this.Iterate_Click);
             // 
             // GraphResultsPanel
             // 
@@ -195,6 +211,7 @@
             this.button1.TabIndex = 8;
             this.button1.Text = "Graficar Inf";
             this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.Graficar_Infecciosidad_Click);
             // 
             // ReturnBtn
             // 
@@ -220,6 +237,7 @@
             this.Name = "SimulatorControl";
             this.Size = new System.Drawing.Size(800, 450);
             this.tableLayoutPanel1.ResumeLayout(false);
+            this.GraphPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -236,5 +254,6 @@
         private System.Windows.Forms.Panel GraphResultsPanel;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button ReturnBtn;
+        private System.Windows.Forms.ComboBox NetworkSelectBox;
     }
 }

@@ -20,6 +20,8 @@ namespace SimuladorAplicacion.Simulator
 
         public double InfectionChiSquaredFactor;
 
+        public double RecoveryChiSquaredFactor;
+
         public List<double> InfectionProbabilities;
 
         public List<double> RecoveryProbabilities;

@@ -28,8 +28,12 @@ namespace SimuladorAplicacion.Simulator
         public InfectionSimulator(SimulatorParameters parameters)
         {
             _parameters = parameters;
-            GetGraph1();
-            GetGraph2();
+            //GetGraph1();
+            //GetGraph2();
+
+            GenerateSeededGraph("Red Simple", 20, 1024);
+            GenerateSeededGraph("Red Media", 50, 2048);
+            GenerateSeededGraph("Red Grande", 80, 48151623);
         }
 
         public void InfectRandomNode()
@@ -230,10 +234,108 @@ namespace SimuladorAplicacion.Simulator
             //    InfectionVisualNetworks[_currentNetworkKey].FindNode(nodeKey).Attr.FillColor = Color.Black;
             //}
         }
+        private Graph GenerateSeededGraph(string nombre, int size, uint seed)
+        {
+            uint w = 32;
+            uint n = 624;
+            uint m = 397;
+            uint r = 31;
+            uint a = 0x9908B0DF;
+            uint u = 11;
+            uint d = 0xFFFFFFFF;
+            uint s = 7;
+            uint b = 0x9D2C5680;
+            uint t = 15;
+            uint c = 0xEFC60000;
+            uint I = 18;
+            uint f = 1812433253;
+
+            Graph grafo = new Graph(nombre);
+            
+            grafo.LayoutAlgorithmSettings = new RankingLayoutSettings();
+            grafo.LayoutAlgorithmSettings = new MdsLayoutSettings();
+
+
+            uint[] mT = new uint[n];
+            uint indice = n + 1;
+            uint mascara_inf = (uint) (1 << (int) r) - 1;
+            uint mascara_sup = ~mascara_inf;
+
+            indice = n;
+            mT[0] = seed;
+
+            for (uint i = 1; i < n; i++)
+            {
+                mT[i] = f * (mT[i - 1] ^ ((mT[i - 1] >> ((int)w - 2)) + i));
+            }
+
+            int edgeCounter = 0;
+            while(edgeCounter < size * size)
+            {
+                if (indice >= n)
+                {
+                    if (indice > n)
+                    {
+                        throw new Exception("Nunca se seedeo el generador");
+                    }
+
+                    for (uint i = 0; i < n - 1; i++)
+                    {
+                        uint x = (mT[i] & mascara_sup) + ((mT[(i + 1)] % n) & mascara_inf);
+                        uint xA = x >> 1;
+
+                        if (x % 2 != 0)
+                        {
+                            xA = xA ^ a;
+                        }
+                        mT[i] = mT[(i + m) % n] ^ xA;
+                    }
+
+                    indice = 0;
+                }
+
+                uint y = mT[indice];
+
+                y = y ^ ((y >> (int)u) & d);
+                y = y ^ ((y << (int)s) & b);
+                y = y ^ ((y << (int)t) & c);
+                y = y ^ ((y >> 1));
+
+                indice++;
+
+                float floatSeedead0 = (float)y / uint.MaxValue; 
+
+                //Fin MSTR
+
+                int nodoOrigen = edgeCounter / size;
+                int nodoDest = edgeCounter % size;
+
+                if (nodoOrigen == nodoDest)
+                {
+                    edgeCounter++;
+                    continue;
+                }
+
+                double probUniforme = (double) (size - Math.Abs(nodoOrigen - nodoDest)) / (Math.Pow(size, (double) 5/3));
+
+                if (floatSeedead0 < probUniforme)
+                {
+                    if (!grafo.Edges.Any(e => e.Target == nodoOrigen.ToString() && e.Source == nodoDest.ToString()))
+                        grafo.AddEdge(nodoOrigen.ToString(), nodoDest.ToString()).Attr.ArrowheadAtTarget = ArrowStyle.None;
+                }
+
+                edgeCounter++;
+            }
+
+            CreateDataAndColorize(grafo);
+
+            return grafo;
+
+        }
 
         private void GetGraph2()
         {
-            var graph = new Graph("Red2");
+            var graph = new Graph("Red Media");
 
             graph.LayoutAlgorithmSettings = new RankingLayoutSettings();
             graph.LayoutAlgorithmSettings = new MdsLayoutSettings();
@@ -384,7 +486,7 @@ namespace SimuladorAplicacion.Simulator
 
         private void GetGraph1()
         {
-            var graph = new Graph("Red1");
+            var graph = new Graph("Red Simple");
 
             graph.LayoutAlgorithmSettings = new RankingLayoutSettings();
             graph.LayoutAlgorithmSettings = new MdsLayoutSettings();
