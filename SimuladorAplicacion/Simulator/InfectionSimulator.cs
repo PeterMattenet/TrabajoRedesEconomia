@@ -10,6 +10,8 @@ using Microsoft.Msagl.Layout.Incremental;
 using Microsoft.Msagl.Layout.LargeGraphLayout;
 using Microsoft.Msagl.Layout.MDS;
 using Microsoft.Msagl.Prototype.Ranking;
+using SimuladorAplicacion.Experimentation;
+using SimuladorAplicacion.NetworkCreate;
 using Node = Microsoft.Msagl.Core.Layout.Node;
 
 namespace SimuladorAplicacion.Simulator
@@ -31,9 +33,12 @@ namespace SimuladorAplicacion.Simulator
             //GetGraph1();
             //GetGraph2();
 
-            GenerateSeededGraph("Red Simple", 20, 1024);
-            GenerateSeededGraph("Red Media", 50, 2048);
-            GenerateSeededGraph("Red Grande", 80, 48151623);
+            GenerateSeededGraph("Red Simple", 20, 1024, 0.4);
+            GenerateSeededGraph("Red Media", 50, 2048, 0.4);
+            GenerateSeededGraph("Red Grande", 80, 48151623, 0.4);
+            GenerateSeededGraph("Red Gigante", 120, 315234, 0.33);
+            GenerateSeededGraph("Red Masiva", 160, 1245235, 0.33);
+            GenerateSeededGraph("Red Gargantua", 200, 47109124, 0.33);
         }
 
         public void InfectRandomNode()
@@ -234,7 +239,7 @@ namespace SimuladorAplicacion.Simulator
             //    InfectionVisualNetworks[_currentNetworkKey].FindNode(nodeKey).Attr.FillColor = Color.Black;
             //}
         }
-        private Graph GenerateSeededGraph(string nombre, int size, uint seed)
+        private Graph GenerateSeededGraph(string nombre, int size, uint seed, double conectividad)
         {
             uint w = 32;
             uint n = 624;
@@ -303,8 +308,7 @@ namespace SimuladorAplicacion.Simulator
 
                 indice++;
 
-                float floatSeedead0 = (float)y / uint.MaxValue; 
-
+                float floatSeedead0 = (float)y / uint.MaxValue;
                 //Fin MSTR
 
                 int nodoOrigen = edgeCounter / size;
@@ -316,7 +320,7 @@ namespace SimuladorAplicacion.Simulator
                     continue;
                 }
 
-                double probUniforme = (double) (size - Math.Abs(nodoOrigen - nodoDest)) / (Math.Pow(size, (double) 5/3));
+                double probUniforme = (double) (size - Math.Abs(nodoOrigen - nodoDest)) / (Math.Pow(size, (double) 2 - conectividad));
 
                 if (floatSeedead0 < probUniforme)
                 {
@@ -327,7 +331,12 @@ namespace SimuladorAplicacion.Simulator
                 edgeCounter++;
             }
 
-            CreateDataAndColorize(grafo);
+            var infectionNodes = CreateDataAndColorize(grafo);
+
+            //bind the graph to the viewer 
+            networkNodes.Add(grafo.Label.Text, infectionNodes);
+            InfectionVisualNetworks.Add(grafo.Label.Text, grafo);
+            networkHistories.Add(grafo.Label.Text, new SimulationHistory());
 
             return grafo;
 
@@ -481,7 +490,25 @@ namespace SimuladorAplicacion.Simulator
 
             graph.AddEdge("43", "44").Attr.ArrowheadAtTarget = ArrowStyle.None;
 
-            CreateDataAndColorize(graph);
+            var infectionNodes = CreateDataAndColorize(graph);
+
+            //bind the graph to the viewer 
+            networkNodes.Add(graph.Label.Text, infectionNodes);
+            InfectionVisualNetworks.Add(graph.Label.Text, graph);
+            networkHistories.Add(graph.Label.Text, new SimulationHistory());
+        }
+
+        public void SetParameters(SimulatorParameters parameters)
+        {
+            _parameters = parameters;
+        }
+
+        internal void CreateNewNetwork(InfectionNetworkParameters parameters)
+        {
+            double factorDecimal = parameters.ConnectivityFactor - 1;
+            double factorDe0a1 = factorDecimal / 9;
+
+            GenerateSeededGraph(parameters.Name, parameters.NodeQuantity, parameters.Seed, factorDe0a1);
         }
 
         private void GetGraph1()
@@ -556,39 +583,26 @@ namespace SimuladorAplicacion.Simulator
             graph.AddEdge("W", "X").Attr.ArrowheadAtTarget = ArrowStyle.None;
             //graph.AddEdge("M", "N").Attr.Color = Microsoft.Msagl.Drawing.Color.Green;
 
-            CreateDataAndColorize(graph);
+            var infectionNodes = CreateDataAndColorize(graph);
+
+
+            //bind the graph to the viewer 
+            networkNodes.Add(graph.Label.Text, infectionNodes);
+            InfectionVisualNetworks.Add(graph.Label.Text, graph);
+            networkHistories.Add(graph.Label.Text, new SimulationHistory());
+
         }
 
         public void ResetSimulation()
         {
-            var infectionNodes = networkNodes[_currentNetworkKey];
-            foreach (var node in InfectionVisualNetworks[_currentNetworkKey].Nodes)
-            {
-                var nodeInfo = infectionNodes[node.Id];
-
-                if (nodeInfo.NodeType == NodeType.Healthy)
-                {
-                    node.Attr.FillColor = Color.PaleGreen;
-                }
-                else if (nodeInfo.NodeType == NodeType.Vaccinated)
-                {
-                    node.Attr.FillColor = Color.MediumPurple;
-                }
-                else
-                {
-                    node.Attr.FillColor = Color.Yellow;
-                }
-
-                nodeInfo.NodeStatus = NodeStatus.Susceptible;
-                nodeInfo.DayOfInfection = 0;
-                nodeInfo.DaysUntilSuceptible = 0;
-
-            }
-
+            var infectionNodes = CreateDataAndColorize(InfectionVisualNetworks[_currentNetworkKey]);
+            
+            networkNodes[_currentNetworkKey] = infectionNodes;
+            
             networkHistories[_currentNetworkKey] = new SimulationHistory();
         }
 
-        private void CreateDataAndColorize(Graph graph)
+        private Dictionary<string, InfectionNode> CreateDataAndColorize(Graph graph)
         {
             var infectionNodes = new Dictionary<string, InfectionNode>();
 
@@ -622,7 +636,8 @@ namespace SimuladorAplicacion.Simulator
             {
                 var nodeVaccinated = rand.Next(0, graph.NodeCount - 1);
 
-                while (infectionNodes[infectionNodes.Keys.Skip(nodeVaccinated).First()].NodeType != NodeType.Healthy)
+                while (infectionNodes[infectionNodes.Keys.Skip(nodeVaccinated).First()].NodeType != NodeType.Healthy &&
+                    infectionNodes[infectionNodes.Keys.Skip(nodeVaccinated).First()].NodeType != NodeType.Vaccinated)
                 {
                     nodeVaccinated = rand.Next(0, graph.NodeCount - 1);
                 }
@@ -656,10 +671,7 @@ namespace SimuladorAplicacion.Simulator
                 edge.Attr.ArrowheadLength = 0;
             }
 
-            //bind the graph to the viewer 
-            networkNodes.Add(graph.Label.Text, infectionNodes);
-            InfectionVisualNetworks.Add(graph.Label.Text, graph);
-            networkHistories.Add(graph.Label.Text, new SimulationHistory());
+            return infectionNodes;
         }
 
     }

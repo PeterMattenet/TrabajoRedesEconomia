@@ -17,6 +17,7 @@ using SimuladorAplicacion;
 using Accord;
 using Color = Microsoft.Msagl.Drawing.Color;
 using Accord.Statistics.Distributions.Univariate;
+using SimuladorAplicacion.Experimentation;
 
 namespace SimuladorAplicacion
 {
@@ -24,29 +25,52 @@ namespace SimuladorAplicacion
     {
         private SetupControl setupControl;
         private SimulatorControl simControl;
+        private ExperimentationControl expControl;
+
         public SimulatorForm()
         {
             InitializeComponent();
             setupControl = new SetupControl();
-            simControl = new SimulatorControl();
 
             this.Controls.Clear();
             this.Controls.Add(setupControl);
 
             setupControl.SetupFinish += SetupFinish;
-            simControl.ReturnClick += ReturnSetup;
+            setupControl.ExperimentationSelect += OpenExperimentationControl;
         }
 
         private void SetupFinish(SetupControl control, SimulatorParameters arguments)
         {
+            control.Dispose();
+
+            simControl = new SimulatorControl();
+            simControl.ReturnClick += ReturnSetup;
+
             simControl.Setup(arguments);
             this.Controls.Clear();
             this.Controls.Add(simControl);
 
         }
 
-        private void ReturnSetup(SimulatorControl control)
+        private void OpenExperimentationControl(SetupControl control)
         {
+            control.Dispose();
+
+            expControl = new ExperimentationControl();
+            expControl.ReturnClick += ReturnSetup;
+            
+            this.Controls.Clear();
+            this.Controls.Add(expControl);
+        }
+
+        private void ReturnSetup(UserControl control)
+        {
+            control.Dispose();
+
+            setupControl = new SetupControl();
+            setupControl.ExperimentationSelect += OpenExperimentationControl;
+            setupControl.SetupFinish += SetupFinish;
+
             this.Controls.Clear();
             this.Controls.Add(setupControl);
         }

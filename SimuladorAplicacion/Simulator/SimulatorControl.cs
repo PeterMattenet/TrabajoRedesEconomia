@@ -13,6 +13,7 @@ using System.Windows.Forms.DataVisualization.Charting;
 using Microsoft.Msagl.Drawing;
 using Microsoft.Msagl.GraphViewerGdi;
 using SimuladorAplicacion.Simulator;
+using SimuladorAplicacion.NetworkCreate;
 
 namespace SimuladorAplicacion.Simulator
 {
@@ -34,6 +35,9 @@ namespace SimuladorAplicacion.Simulator
 
         private void ReturnBtn_Click(object sender, EventArgs e)
         {
+            if (SimulatorThread != null && SimulatorThread.IsAlive)
+                SimulatorThread.Abort();
+
             ReturnClick?.Invoke(this);
         }
 
@@ -58,6 +62,9 @@ namespace SimuladorAplicacion.Simulator
             NetworkSelectBox.Items.Add("Red Simple");
             NetworkSelectBox.Items.Add("Red Media");
             NetworkSelectBox.Items.Add("Red Grande");
+            NetworkSelectBox.Items.Add("Red Gigante");
+            NetworkSelectBox.Items.Add("Red Masiva");
+            NetworkSelectBox.Items.Add("Red Gargantua");
 
             _formViewer = new Microsoft.Msagl.GraphViewerGdi.GViewer();
 
@@ -431,6 +438,31 @@ namespace SimuladorAplicacion.Simulator
         {
             ComboBox combo = sender as ComboBox;
             _formViewer.Graph = Simulator.SetCurrentNetworkSimulation(combo.SelectedItem.ToString());
+        }
+
+        internal void AddNewNetwork(InfectionNetworkParameters parameters)
+        {
+            NetworkSelectBox.Items.Add(parameters.Name);
+
+            Simulator.CreateNewNetwork(parameters);
+
+            NetworkSelectBox.SelectedItem = parameters.Name;
+        }
+
+        private void CrearRedBtn_Click(object sender, EventArgs e)
+        {
+
+            NetworkCreateForm form = new NetworkCreateForm();
+
+            form.SetupFinish += AddNewNetwork;
+
+            form.ShowDialog();
+
+        }
+
+        private void tableLayoutPanel1_Paint(object sender, PaintEventArgs e)
+        {
+
         }
     }
 }

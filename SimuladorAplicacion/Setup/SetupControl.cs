@@ -15,6 +15,9 @@ namespace SimuladorAplicacion.Setup
     {
         public delegate void onFinishClick(SetupControl setupControl, SimulatorParameters args);
         public event onFinishClick SetupFinish;
+        public delegate void onExperimentationClick(SetupControl setupControl);
+        public event onExperimentationClick ExperimentationSelect;
+
         private SimulatorParameters arguments;
 
         public SetupControl()
@@ -290,6 +293,11 @@ namespace SimuladorAplicacion.Setup
         private void VaccineRatioErrorLabel_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void ExperimentBtn_Click(object sender, EventArgs e)
+        {
+            ExperimentationSelect?.Invoke(this);
         }
     }
 }

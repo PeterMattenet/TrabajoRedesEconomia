@@ -408,6 +408,7 @@
             this.ExperimentBtn.TabIndex = 30;
             this.ExperimentBtn.Text = "Experimentar";
             this.ExperimentBtn.UseVisualStyleBackColor = false;
+            this.ExperimentBtn.Click += new System.EventHandler(this.ExperimentBtn_Click);
             // 
             // SetupControl
             // 
