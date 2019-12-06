@@ -35,7 +35,7 @@ namespace SimuladorAplicacion.Simulator
 
             GenerateSeededGraph("Red Simple", 20, 1024, 0.4);
             GenerateSeededGraph("Red Media", 50, 2048, 0.4);
-            GenerateSeededGraph("Red Grande", 80, 48151623, 0.4);
+            GenerateSeededGraph("Red Grande", 80, 48151623, 0.20);
             GenerateSeededGraph("Red Gigante", 120, 315234, 0.33);
             GenerateSeededGraph("Red Masiva", 160, 1245235, 0.33);
             GenerateSeededGraph("Red Gargantua", 200, 47109124, 0.33);

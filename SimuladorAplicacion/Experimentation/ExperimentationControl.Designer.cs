@@ -461,7 +461,7 @@
             this.InfectionExperiment.Name = "InfectionExperiment";
             this.InfectionExperiment.Size = new System.Drawing.Size(76, 35);
             this.InfectionExperiment.TabIndex = 8;
-            this.InfectionExperiment.Text = "Graficar Inf";
+            this.InfectionExperiment.Text = "Graficar Infectados";
             this.InfectionExperiment.UseVisualStyleBackColor = true;
             this.InfectionExperiment.Click += new System.EventHandler(this.InfectionExperiment_Click);
             // 
@@ -476,7 +476,7 @@
             this.Graficar.Name = "Graficar";
             this.Graficar.Size = new System.Drawing.Size(76, 35);
             this.Graficar.TabIndex = 6;
-            this.Graficar.Text = "Graficar Vac";
+            this.Graficar.Text = "Graficar Personas En Riesgo";
             this.Graficar.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -490,7 +490,7 @@
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(76, 35);
             this.button2.TabIndex = 9;
-            this.button2.Text = "Graficar Ries";
+            this.button2.Text = "Graficar Poblacion Afectada";
             this.button2.UseVisualStyleBackColor = true;
             // 
             // FileNameBtn

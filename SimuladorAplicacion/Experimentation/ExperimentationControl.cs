@@ -650,7 +650,7 @@ namespace SimuladorAplicacion.Experimentation
             }
 
 
-            experimentResultChart.SaveImage(Environment.CurrentDirectory + $"{FilePathTextbox.Text}.png", ChartImageFormat.Png);
+            experimentResultChart.SaveImage(Environment.CurrentDirectory + $"\\{FilePathTextbox.Text}.png", ChartImageFormat.Png);
 
             SimulationProgressBar.Visible = false;
 
@@ -665,8 +665,6 @@ namespace SimuladorAplicacion.Experimentation
             {
                 res += experiments[i].IterationsAmount * experiments[i].ExperimentAmount;
             }
-
-            res += iterationNumber;
             
             for(int i = 0; i < simulatorNumber; i++)
             {
